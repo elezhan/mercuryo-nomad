@@ -6,22 +6,14 @@
     
   </head>
   <body>
-    <script src="https://widget.mercuryo.io/embed.2.0.js"></script>
-    <script type="text/javascript">
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const merchant_transaction_id = urlParams.get('merchant_transaction_id')
-    const amount = urlParams.get('amount')
-    const sendcurrency = urlParams.get('sendcurrency')
-    console.log(merchant_transaction_id,username,amount,sendcurrency);
     
-    mercuryoWidget.run({widgetId: '7fcadb11-47cc-495f-8538-1eb1a5fc883c',merchant_transaction_id:merchant_transaction_id,type:"buy", currency:"ETH",fiat_amount:amount,fix_fiat_amount:true, fiat_currency:sendcurrency,fix_fiat_currency:true,host: document.getElementById('mercuryo-widget')})
-    
-    </script>
     
 
     <div id="mercuryo-widget">
     </div>
+    <script src="https://widget.mercuryo.io/embed.2.0.js"></script>
+
+    <script>mercuryoWidget.run({widgetId: '7fcadb11-47cc-495f-8538-1eb1a5fc883c', host: document.getElementById('mercuryo-widget')});</script>
     
   </body>
 </html>
