@@ -43,7 +43,7 @@ const address = urlParams.get('address') || '0x4ecbc7a6307294920797bd4885898b0c0
 const systemId = urlParams.get('systemId')
 const fiatCurrency = urlParams.get('fiatCurrency')
 const fiatAmount = urlParams.get('fiatAmount')
-const cryptocurrency = urlParams.get('cryptocurrency')
+const currency = urlParams.get('currency')
 
 
 
@@ -102,19 +102,19 @@ const options = {
   fixAmount:true,
   type:"buy",
   height:"100px",
-  currency:cryptocurrency,
+  currency:currency,
   fixCurrency:true,
   onStatusChange: (data) => handleMercuryoStatusChange(data),
 }
 
-Raven.config("https://59929d76bbe24fe5b9be35593bfc1872@o1386920.ingest.sentry.io/6707651").install();
+// Raven.config("https://59929d76bbe24fe5b9be35593bfc1872@o1386920.ingest.sentry.io/6707651").install();
 
 
 
 try {
   mercuryoWidget.run(options);
     } catch (e) {
-      Raven.captureException(e);
+      // Raven.captureException(e);
       console.log('merc err:', e);
     }
 
