@@ -3,50 +3,122 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script
+  src="https://cdn.ravenjs.com/3.26.4/raven.min.js"
+  crossorigin="anonymous"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
     
     
-
-    <div id="mercuryo-widget">
+    
+    <div style="height:800px;width:100%;" class="outer-merc">
+      <!-- <div id="greeting" style='background: #ffffff;;position:absolute;height:100px;width:100%;'>
+      
+      </div> -->
+      <div id="mercuryo-widget" style="height:100%;width:380px;margin-left:auto;margin-right:auto;"></div>
     </div>
+    
     <script src="https://widget.mercuryo.io/embed.2.0.js"></script>
 
     <script>
 
+// const queryString = window.location.search;
+// const urlParams = new URLSearchParams(queryString);
+// const signature = urlParams.get('signature')
+// const address = urlParams.get('address')
+// const nickname = urlParams.get('nickname')
+// const fiatCurrency = urlParams.get('fiatCurrency')
+// const fiatAmount = urlParams.get('fiatAmount')
+// const fixFiatCurrency = urlParams.get('fixFiatCurrency')
+// const fixFiatAmount = urlParams.get('fixFiatAmount')
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const signature = urlParams.get('signature')
-const address = urlParams.get('address')
-const merchantTransactionId = urlParams.get('merchantTransactionId')
+
+const widgetId = urlParams.get('widgetId') || 'f6e769f8-060a-4b92-a125-68899fdcdc58'
+const signature = urlParams.get('signature') || 'd9b2847293ca99b36eeeea771a7e47923b264504abf66a35acf4ac0747022a16ea8424a8bb6a20daed089938f7a374b1f77d10ac34e940c511f8fcecc26c28c4'
+const address = urlParams.get('address') || '0x4ecbc7a6307294920797bd4885898b0c089569ec'
+const systemId = urlParams.get('systemId')
 const fiatCurrency = urlParams.get('fiatCurrency')
 const fiatAmount = urlParams.get('fiatAmount')
-const fixFiatCurrency = urlParams.get('fixFiatCurrency')
-const fixFiatAmount = urlParams.get('fixFiatAmount')
-const lang = urlParams.get('lang')
+const cryptocurrency = urlParams.get('cryptocurrency')
+
+
+
+
+function getRandomEnding(max) {
+  const num = Math.floor(Math.random() * max);
+  return num.toString();
+}
+
+const merchantTransactionId = systemId + '-' + getRandomEnding(9);
+
+const doubleNotifyServer = async () => {
+    const payload = { systemId };
+    const url =
+      'https://us-central1-nomad-91174.cloudfunctions.net/express/v9f/unsafe/merc-chaching';
+    return axios.post(url, payload);
+  };
+
+const handleSuccess = () => {
+  doubleNotifyServer();
+}
+
+
+const handleMercuryoStatusChange = (data) => {
+    const { status } = data;
+    if (status == 'paid') {
+      handleSuccess();
+    } else if (
+      status == 'order_failed' ||
+      status == 'cancelled' ||
+      status == 'descriptor_failed' ||
+      status == 400 ||
+      status == '400' ||
+      status == 403 ||
+      status == '403'
+    ) {
+      handleFailure();
+    } else {
+      console.log('getting data from merc', data);
+      console.log('status from merc is', status);
+    }
+  };
+
+
 
 const options = {
-  widgetId:"7fcadb11-47cc-495f-8538-1eb1a5fc883c", 
+  widgetId:widgetId,
   host:document.getElementById('mercuryo-widget'),
-  signature,
-  address,
-  merchantTransactionId,
-  fiatCurrency,
-  fiatAmount,
-  fixFiatCurrency,
-  fixFiatAmount,
+  signature:signature,
+  address:address,
+  merchantTransactionId:merchantTransactionId,
+  fiatCurrency:fiatCurrency,
+  fiatAmount:fiatAmount,
+  fixFiatCurrency:true,
+  fixFiatAmount:true,
+  fixAmount:true,
   type:"buy",
-  lang,
   height:"100px",
-  currency:"ETH",
-  fixCurrency:true
+  currency:cryptocurrency,
+  fixCurrency:true,
+  onStatusChange: (data) => handleMercuryoStatusChange(data),
 }
-console.log(options);
+
+Raven.config("https://59929d76bbe24fe5b9be35593bfc1872@o1386920.ingest.sentry.io/6707651").install();
 
 
 
-    mercuryoWidget.run(options);
+try {
+  mercuryoWidget.run(options);
+    } catch (e) {
+      Raven.captureException(e);
+      console.log('merc err:', e);
+    }
+
+    
     
     
     </script>
