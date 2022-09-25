@@ -14,11 +14,11 @@
     
     
     
-    <div style="height:auto;width:auto;" class="outer-merc">
+    <div style="height:100%;width:auto;" class="outer-merc">
       <!-- <div id="greeting" style='background: #ffffff;;position:absolute;height:100px;width:100%;'>
       
       </div> -->
-      <div id="mercuryo-widget" style="height:auto;width:auto;margin-left:auto;margin-right:auto;"></div>
+      <div id="mercuryo-widget" style="height:100%;width:auto;margin-left:auto;margin-right:auto;"></div>
     </div>
     
     <script src="https://widget.mercuryo.io/embed.2.0.js"></script>
@@ -101,7 +101,7 @@ const options = {
   fixFiatAmount:true,
   fixAmount:true,
   type:"buy",
-  height:"100%",
+  height:"auto",
   currency:currency,
   fixCurrency:true,
   onStatusChange: (data) => handleMercuryoStatusChange(data),
